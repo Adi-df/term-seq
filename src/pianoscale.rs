@@ -23,7 +23,7 @@ impl AsRef<[u8]> for RawSound {
 }
 
 impl RawSound {
-    fn load_from_file(filepath: &str) -> io::Result<Self> {
+    fn load_from_file(filepath: &str) -> anyhow::Result<Self> {
         let mut buf = Vec::new();
         let mut file = File::open(filepath)?;
         file.read_to_end(&mut buf)?;
@@ -51,23 +51,16 @@ impl PianoScale {
         template: &str,
         player: &AudioPlayerInterface,
         output_stream: &OutputStreamHandle,
-    ) -> io::Result<PianoScale> {
-        let stream = Arc::new(Sink::try_new(output_stream).unwrap());
-        player.register_stream(stream.clone()).unwrap();
+    ) -> anyhow::Result<Self> {
+        let stream = Arc::new(Sink::try_new(output_stream)?);
+        player.register_stream(stream.clone())?;
 
         let mut notes_data = HashMap::new();
         Note::list().into_iter().try_for_each(|note| {
-            println!(
-                "{}",
-                &strfmt(template, &HashMap::from([(String::from("note"), note)])).unwrap()
-            );
-            notes_data.insert(
-                note,
-                RawSound::load_from_file(
-                    &strfmt(template, &HashMap::from([(String::from("note"), note)])).unwrap(),
-                )?,
-            );
-            Ok::<(), io::Error>(())
+            let file = strfmt(template, &HashMap::from([(String::from("note"), note)]))?;
+
+            notes_data.insert(note, RawSound::load_from_file(&file)?);
+            Ok::<(), anyhow::Error>(())
         })?;
         Ok(Self { stream, notes_data })
     }
@@ -79,11 +72,10 @@ impl NoteScale for PianoScale {
         note: Note,
         _player: &AudioPlayerInterface,
         _output_stream_handle: &OutputStreamHandle,
-    ) -> Result<(), rodio::PlayError> {
+    ) -> anyhow::Result<()> {
         if let Some(note_sound) = self.notes_data.get(&note) {
             info!("Stream len before : {}", self.stream.len());
 
-            self.stream.clear();
             self.stream
                 .append(note_sound.decoder().convert_samples::<f32>());
 

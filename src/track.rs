@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 
 use rodio::OutputStreamHandle;
 
-use crate::note::Note;
+use crate::note::{Note, UnknownNote};
 use crate::notescale::NoteScale;
 use crate::player::AudioPlayerInterface;
 
@@ -22,7 +22,7 @@ impl From<&Track> for Vec<&str> {
 }
 
 impl TryFrom<&[&str]> for Track {
-    type Error = ();
+    type Error = UnknownNote;
     fn try_from(track: &[&str]) -> Result<Track, Self::Error> {
         Ok(Track {
             content: track
@@ -58,7 +58,7 @@ impl Track {
         &mut self,
         player: &AudioPlayerInterface,
         output_stream_handle: &OutputStreamHandle,
-    ) -> Result<(), rodio::PlayError> {
+    ) -> anyhow::Result<()> {
         self.last_beat = Instant::now();
         self.current += 1;
         self.current %= self.length();

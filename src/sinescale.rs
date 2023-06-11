@@ -19,7 +19,7 @@ impl NoteScale for SineScale {
         note: Note,
         player: &AudioPlayerInterface,
         output_stream_hanle: &OutputStreamHandle,
-    ) -> Result<(), rodio::PlayError> {
+    ) -> anyhow::Result<()> {
         let sink = Sink::try_new(output_stream_hanle)?;
         sink.append(
             SineWave::new((self.freq)(note))
@@ -27,7 +27,7 @@ impl NoteScale for SineScale {
                 .amplify(self.amplify),
         );
 
-        player.play_sink(sink).unwrap();
+        player.play_sink(sink)?;
         Ok(())
     }
 }

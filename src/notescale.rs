@@ -9,5 +9,5 @@ pub trait NoteScale {
         note: Note,
         player: &AudioPlayerInterface,
         output_stream_handle: &OutputStreamHandle,
-    ) -> Result<(), rodio::PlayError>;
+    ) -> anyhow::Result<()>;
 }

@@ -1,6 +1,18 @@
+use std::error::Error;
 use std::fmt::Display;
 
 use strfmt::DisplayStr;
+
+#[derive(Clone, Debug)]
+pub struct UnknownNote(String);
+
+impl Display for UnknownNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "The provided string '{}' is unknown", self.0)
+    }
+}
+
+impl Error for UnknownNote {}
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Note {
@@ -42,7 +54,7 @@ impl From<Note> for &str {
 }
 
 impl TryFrom<&str> for Note {
-    type Error = ();
+    type Error = UnknownNote;
     fn try_from(note: &str) -> Result<Self, Self::Error> {
         match note {
             "C" => Ok(Note::C),
@@ -52,7 +64,7 @@ impl TryFrom<&str> for Note {
             "G" => Ok(Note::G),
             "A" => Ok(Note::A),
             "B" => Ok(Note::B),
-            _ => Err(()),
+            _ => Err(UnknownNote(note.to_string())),
         }
     }
 }

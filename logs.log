@@ -1,61 +1,63 @@
-[00:00:00.000] (7f8f592cf600) INFO   Load scales
-[00:00:00.018] (7f8f592cf600) INFO   Start TUI
-[00:00:00.018] (7f8f434366c0) INFO   Received control flow
-[00:00:00.018] (7f8f434366c0) INFO   0 sinks playings
-[00:00:00.018] (7f8f434366c0) INFO   0 stream playings
-[00:00:01.470] (7f8f434366c0) INFO   Received control flow
-[00:00:01.471] (7f8f434366c0) INFO   0 sinks playings
-[00:00:01.471] (7f8f434366c0) INFO   1 stream playings
-[00:00:01.972] (7f8f592cf600) INFO   Stream len before : 0
-[00:00:01.973] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:02.480] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:02.495] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:02.983] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:03.000] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:03.480] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:03.484] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:03.484] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:03.485] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:03.988] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:03.992] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:04.496] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:04.512] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:04.997] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:05.017] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:05.485] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:05.506] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:05.506] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:05.507] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:06.014] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:06.019] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:06.523] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:06.523] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:07.023] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:07.031] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:07.495] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:07.509] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:07.533] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:07.538] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:08.037] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:08.042] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:08.540] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:08.549] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:09.045] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:09.056] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:09.497] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:09.505] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:09.557] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:09.561] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:10.058] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:10.061] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:10.569] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:10.573] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:11.076] (7f8f592cf600) INFO   Stream len before : 1
-[00:00:11.077] (7f8f592cf600) INFO   Stream len after : 1
-[00:00:11.190] (7f8f434366c0) INFO   Received control flow
-[00:00:11.190] (7f8f434366c0) INFO   0 sinks playings
-[00:00:11.190] (7f8f434366c0) INFO   1 stream playings
-[00:00:11.767] (7f8f434366c0) INFO   Received control flow
-[00:00:11.767] (7f8f434366c0) INFO   0 sinks playings
-[00:00:11.768] (7f8f434366c0) INFO   1 stream playings
-[00:00:11.768] (7f8f592cf600) INFO   Stop
+[00:00:00.000] (7f16b2972600) INFO   Load scales
+[00:00:00.015] (7f16b2972600) INFO   Start TUI
+[00:00:00.015] (7f16acbc06c0) INFO   Received control flow
+[00:00:00.016] (7f16acbc06c0) INFO   0 sinks playings
+[00:00:00.016] (7f16acbc06c0) INFO   0 stream playings
+[00:00:00.996] (7f16acbc06c0) INFO   Received control flow
+[00:00:00.996] (7f16acbc06c0) INFO   0 sinks playings
+[00:00:00.996] (7f16acbc06c0) INFO   1 stream playings
+[00:00:01.506] (7f16acbc06c0) INFO   Received control flow
+[00:00:01.506] (7f16acbc06c0) INFO   0 sinks playings
+[00:00:01.506] (7f16acbc06c0) INFO   1 stream playings
+[00:00:02.008] (7f16acbc06c0) INFO   Received control flow
+[00:00:02.008] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:02.008] (7f16acbc06c0) INFO   1 stream playings
+[00:00:02.515] (7f16acbc06c0) INFO   Received control flow
+[00:00:02.515] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:02.516] (7f16acbc06c0) INFO   1 stream playings
+[00:00:03.021] (7f16acbc06c0) INFO   Received control flow
+[00:00:03.021] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:03.021] (7f16acbc06c0) INFO   1 stream playings
+[00:00:03.526] (7f16acbc06c0) INFO   Received control flow
+[00:00:03.526] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:03.526] (7f16acbc06c0) INFO   1 stream playings
+[00:00:04.036] (7f16acbc06c0) INFO   Received control flow
+[00:00:04.037] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:04.037] (7f16acbc06c0) INFO   1 stream playings
+[00:00:04.540] (7f16acbc06c0) INFO   Received control flow
+[00:00:04.540] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:04.540] (7f16acbc06c0) INFO   1 stream playings
+[00:00:05.043] (7f16acbc06c0) INFO   Received control flow
+[00:00:05.043] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:05.044] (7f16acbc06c0) INFO   1 stream playings
+[00:00:05.554] (7f16acbc06c0) INFO   Received control flow
+[00:00:05.554] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:05.555] (7f16acbc06c0) INFO   1 stream playings
+[00:00:06.066] (7f16acbc06c0) INFO   Received control flow
+[00:00:06.066] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:06.066] (7f16acbc06c0) INFO   1 stream playings
+[00:00:06.567] (7f16acbc06c0) INFO   Received control flow
+[00:00:06.567] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:06.567] (7f16acbc06c0) INFO   1 stream playings
+[00:00:07.068] (7f16acbc06c0) INFO   Received control flow
+[00:00:07.068] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:07.068] (7f16acbc06c0) INFO   1 stream playings
+[00:00:07.579] (7f16acbc06c0) INFO   Received control flow
+[00:00:07.579] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:07.579] (7f16acbc06c0) INFO   1 stream playings
+[00:00:08.090] (7f16acbc06c0) INFO   Received control flow
+[00:00:08.090] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:08.090] (7f16acbc06c0) INFO   1 stream playings
+[00:00:08.591] (7f16acbc06c0) INFO   Received control flow
+[00:00:08.591] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:08.591] (7f16acbc06c0) INFO   1 stream playings
+[00:00:09.097] (7f16acbc06c0) INFO   Received control flow
+[00:00:09.097] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:09.097] (7f16acbc06c0) INFO   1 stream playings
+[00:00:09.597] (7f16acbc06c0) INFO   Received control flow
+[00:00:09.598] (7f16acbc06c0) INFO   1 sinks playings
+[00:00:09.598] (7f16acbc06c0) INFO   1 stream playings
+[00:00:09.798] (7f16acbc06c0) INFO   Received control flow
+[00:00:09.798] (7f16acbc06c0) INFO   2 sinks playings
+[00:00:09.799] (7f16acbc06c0) INFO   1 stream playings
+[00:00:09.799] (7f16b2972600) INFO   Stop

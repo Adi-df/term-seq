@@ -63,24 +63,27 @@ impl AudioPlayerInterface {
         self.sender.clone()
     }
 
-    pub fn play_sink(&self, sink: Sink) -> Result<(), SendError<AudioControlFlow>> {
-        self.get_sender().send(AudioControlFlow::PlaySink { sink })
+    pub fn play_sink(&self, sink: Sink) -> anyhow::Result<()> {
+        Ok(self
+            .get_sender()
+            .send(AudioControlFlow::PlaySink { sink })?)
     }
 
-    pub fn register_stream(&self, stream: Arc<Sink>) -> Result<(), SendError<AudioControlFlow>> {
-        self.get_sender()
-            .send(AudioControlFlow::RegisterStream { stream })
+    pub fn register_stream(&self, stream: Arc<Sink>) -> anyhow::Result<()> {
+        Ok(self
+            .get_sender()
+            .send(AudioControlFlow::RegisterStream { stream })?)
     }
 
-    pub fn pause(&self) -> Result<(), SendError<AudioControlFlow>> {
-        self.get_sender().send(AudioControlFlow::Pause)
+    pub fn pause(&self) -> anyhow::Result<()> {
+        Ok(self.get_sender().send(AudioControlFlow::Pause)?)
     }
 
-    pub fn resume(&self) -> Result<(), SendError<AudioControlFlow>> {
-        self.get_sender().send(AudioControlFlow::Resume)
+    pub fn resume(&self) -> anyhow::Result<()> {
+        Ok(self.get_sender().send(AudioControlFlow::Resume)?)
     }
 
-    pub fn stop(&self) -> Result<(), SendError<AudioControlFlow>> {
-        self.get_sender().send(AudioControlFlow::Stop)
+    pub fn stop(&self) -> anyhow::Result<()> {
+        Ok(self.get_sender().send(AudioControlFlow::Stop)?)
     }
 }

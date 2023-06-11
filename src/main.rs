@@ -5,7 +5,6 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 use log::info;
-
 use simple_logging::log_to_file;
 
 use tui::backend::CrosstermBackend;
@@ -48,11 +47,11 @@ struct AppData {
     beat: Duration,
 }
 
-fn main() -> Result<(), io::Error> {
-    log_to_file("logs.log", log::LevelFilter::Info).unwrap();
+fn main() -> anyhow::Result<()> {
+    log_to_file("logs.log", log::LevelFilter::Info)?;
 
     info!("Load scales");
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let (_stream, stream_handle) = OutputStream::try_default()?;
 
     let (player, interface) = create_audio_player();
 
@@ -66,25 +65,22 @@ fn main() -> Result<(), io::Error> {
             Note::A => 440.00,
             Note::B => 493.88,
         }),
-        Duration::from_millis(100),
+        Duration::from_millis(500),
         0.10,
     ));
 
-    let piano_scale = Rc::new(
-        PianoScale::from_files("assets/GrandPiano/{note}4.wav", &interface, &stream_handle)
-            .unwrap(),
-    );
+    let piano_scale = Rc::new(PianoScale::from_files(
+        "assets/GrandPiano/{note}4.wav",
+        &interface,
+        &stream_handle,
+    )?);
 
     let mut app_data = AppData {
         tracks: vec![
-            Track::try_from(&["C", "D", "E", "F", "G", "A", "B"][..])
-                .unwrap()
-                .set_tempo(0.5)
-                .set_note_scale(Some(piano_scale.clone())),
-            Track::try_from(&["C", "D", "E"][..])
-                .unwrap()
+            Track::try_from(&["C", "D", "E", "F", "G", "A", "B"][..])?
                 .set_tempo(2.)
-                .set_note_scale(Some(piano_scale.clone())),
+                .set_note_scale(Some(sine_scale.clone())),
+            Track::try_from(&["C", "D", "E"][..])?.set_tempo(2.),
         ],
         player: interface,
         stream_handle,
@@ -116,10 +112,10 @@ fn main() -> Result<(), io::Error> {
 
     info!("Stop");
 
-    res
+    Ok(res?)
 }
 
-fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> Result<(), io::Error> {
+fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> anyhow::Result<()> {
     let length = app_data.tracks.iter().map(Track::length).max().unwrap_or(0);
     let sizes = [Constraint::Length(8)]
         .into_iter()
@@ -179,35 +175,39 @@ fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> Result<(), io::Error
         })?;
 
         if app_data.playing {
-            app_data.tracks.iter_mut().for_each(|track| {
-                if track.should_beat(app_data.beat) {
-                    track
-                        .beat(&app_data.player, &app_data.stream_handle)
-                        .unwrap();
-                }
-            });
+            app_data
+                .tracks
+                .iter_mut()
+                .map(|track| {
+                    if track.should_beat(app_data.beat) {
+                        track.beat(&app_data.player, &app_data.stream_handle)
+                    } else {
+                        Ok(())
+                    }
+                })
+                .collect::<anyhow::Result<()>>()?;
         }
 
         if event::poll(Duration::from_millis(10))? {
             if let Event::Key(k) = event::read()? {
                 match k.code {
                     KeyCode::Home | KeyCode::Esc | KeyCode::Char('q') => {
-                        app_data.player.stop().unwrap();
+                        app_data.player.stop()?;
                         break;
                     }
                     KeyCode::Char('c') if k.modifiers == KeyModifiers::CONTROL => {
-                        app_data.player.stop().unwrap();
+                        app_data.player.stop()?;
                         break;
                     }
                     KeyCode::Char('r') => {
                         app_data.tracks.iter_mut().for_each(Track::restart);
-                        app_data.player.stop().unwrap();
+                        app_data.player.stop()?;
                     }
                     KeyCode::Char(' ') => {
                         if app_data.playing {
-                            app_data.player.pause().unwrap();
+                            app_data.player.pause()?;
                         } else {
-                            app_data.player.resume().unwrap();
+                            app_data.player.resume()?;
                         }
 
                         app_data

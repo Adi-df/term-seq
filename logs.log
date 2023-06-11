@@ -1,63 +1,17 @@
-[00:00:00.000] (7f16b2972600) INFO   Load scales
-[00:00:00.015] (7f16b2972600) INFO   Start TUI
-[00:00:00.015] (7f16acbc06c0) INFO   Received control flow
-[00:00:00.016] (7f16acbc06c0) INFO   0 sinks playings
-[00:00:00.016] (7f16acbc06c0) INFO   0 stream playings
-[00:00:00.996] (7f16acbc06c0) INFO   Received control flow
-[00:00:00.996] (7f16acbc06c0) INFO   0 sinks playings
-[00:00:00.996] (7f16acbc06c0) INFO   1 stream playings
-[00:00:01.506] (7f16acbc06c0) INFO   Received control flow
-[00:00:01.506] (7f16acbc06c0) INFO   0 sinks playings
-[00:00:01.506] (7f16acbc06c0) INFO   1 stream playings
-[00:00:02.008] (7f16acbc06c0) INFO   Received control flow
-[00:00:02.008] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:02.008] (7f16acbc06c0) INFO   1 stream playings
-[00:00:02.515] (7f16acbc06c0) INFO   Received control flow
-[00:00:02.515] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:02.516] (7f16acbc06c0) INFO   1 stream playings
-[00:00:03.021] (7f16acbc06c0) INFO   Received control flow
-[00:00:03.021] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:03.021] (7f16acbc06c0) INFO   1 stream playings
-[00:00:03.526] (7f16acbc06c0) INFO   Received control flow
-[00:00:03.526] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:03.526] (7f16acbc06c0) INFO   1 stream playings
-[00:00:04.036] (7f16acbc06c0) INFO   Received control flow
-[00:00:04.037] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:04.037] (7f16acbc06c0) INFO   1 stream playings
-[00:00:04.540] (7f16acbc06c0) INFO   Received control flow
-[00:00:04.540] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:04.540] (7f16acbc06c0) INFO   1 stream playings
-[00:00:05.043] (7f16acbc06c0) INFO   Received control flow
-[00:00:05.043] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:05.044] (7f16acbc06c0) INFO   1 stream playings
-[00:00:05.554] (7f16acbc06c0) INFO   Received control flow
-[00:00:05.554] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:05.555] (7f16acbc06c0) INFO   1 stream playings
-[00:00:06.066] (7f16acbc06c0) INFO   Received control flow
-[00:00:06.066] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:06.066] (7f16acbc06c0) INFO   1 stream playings
-[00:00:06.567] (7f16acbc06c0) INFO   Received control flow
-[00:00:06.567] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:06.567] (7f16acbc06c0) INFO   1 stream playings
-[00:00:07.068] (7f16acbc06c0) INFO   Received control flow
-[00:00:07.068] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:07.068] (7f16acbc06c0) INFO   1 stream playings
-[00:00:07.579] (7f16acbc06c0) INFO   Received control flow
-[00:00:07.579] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:07.579] (7f16acbc06c0) INFO   1 stream playings
-[00:00:08.090] (7f16acbc06c0) INFO   Received control flow
-[00:00:08.090] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:08.090] (7f16acbc06c0) INFO   1 stream playings
-[00:00:08.591] (7f16acbc06c0) INFO   Received control flow
-[00:00:08.591] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:08.591] (7f16acbc06c0) INFO   1 stream playings
-[00:00:09.097] (7f16acbc06c0) INFO   Received control flow
-[00:00:09.097] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:09.097] (7f16acbc06c0) INFO   1 stream playings
-[00:00:09.597] (7f16acbc06c0) INFO   Received control flow
-[00:00:09.598] (7f16acbc06c0) INFO   1 sinks playings
-[00:00:09.598] (7f16acbc06c0) INFO   1 stream playings
-[00:00:09.798] (7f16acbc06c0) INFO   Received control flow
-[00:00:09.798] (7f16acbc06c0) INFO   2 sinks playings
-[00:00:09.799] (7f16acbc06c0) INFO   1 stream playings
-[00:00:09.799] (7f16b2972600) INFO   Stop
+[00:00:00.000] (7fa91672d600) INFO   Start
+[00:00:00.000] (7fa91672d600) INFO   Create audio player
+[00:00:00.008] (7fa91672d600) INFO   Load scales
+[00:00:00.008] (7fa91672d600) INFO   Load files
+[00:00:00.009] (7fa91672d600) INFO   Load assets/GrandPiano/C4.wav
+[00:00:00.009] (7fa91672d600) INFO   Load assets/GrandPiano/D4.wav
+[00:00:00.009] (7fa91672d600) INFO   Load assets/GrandPiano/E4.wav
+[00:00:00.009] (7fa91672d600) INFO   Load assets/GrandPiano/F4.wav
+[00:00:00.009] (7fa91672d600) INFO   Load assets/GrandPiano/G4.wav
+[00:00:00.010] (7fa91672d600) INFO   Load assets/GrandPiano/A4.wav
+[00:00:00.010] (7fa91672d600) INFO   Load assets/GrandPiano/B4.wav
+[00:00:00.010] (7fa91672d600) INFO   Loaded 7 files successfuly
+[00:00:00.010] (7fa91672d600) INFO   Init app data
+[00:00:00.010] (7fa91672d600) INFO   Start audio player deamon
+[00:00:00.010] (7fa91672d600) INFO   Start TUI
+[00:00:02.537] (7fa9117456c0) INFO   Received control flow : Stop
+[00:00:02.537] (7fa91672d600) INFO   Exit

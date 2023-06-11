@@ -1,8 +1,6 @@
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
-use rodio::OutputStreamHandle;
-
 use crate::note::{Note, UnknownNote};
 use crate::notescale::NoteScale;
 use crate::player::AudioPlayerInterface;
@@ -54,17 +52,13 @@ impl Track {
         self.last_beat.elapsed() > beat.mul_f64(1. / self.tempo)
     }
 
-    pub fn beat(
-        &mut self,
-        player: &AudioPlayerInterface,
-        output_stream_handle: &OutputStreamHandle,
-    ) -> anyhow::Result<()> {
+    pub fn beat(&mut self, player: &AudioPlayerInterface) -> anyhow::Result<()> {
         self.last_beat = Instant::now();
         self.current += 1;
         self.current %= self.length();
 
         if let Some(scale) = &self.note_scale {
-            scale.play_note(self.content[self.current], player, output_stream_handle)?;
+            scale.play_note(self.content[self.current], player)?;
         }
 
         Ok(())

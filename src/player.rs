@@ -1,57 +1,65 @@
-use std::sync::mpsc::{channel, Receiver, SendError, Sender};
-use std::sync::Arc;
+use std::fmt::Display;
+use std::sync::mpsc::{channel, Receiver, Sender};
 
 use log::info;
 
-use rodio::Sink;
+use awedio::manager::Manager;
+use awedio::Sound;
 
 pub enum AudioControlFlow {
-    PlaySink { sink: Sink },
-    RegisterStream { stream: Arc<Sink> },
+    Play { sound: Box<dyn Sound + Send + Sync> },
     Stop,
     Pause,
     Resume,
 }
 
+impl Display for AudioControlFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                AudioControlFlow::Play { .. } => "Play",
+                AudioControlFlow::Stop => "Stop",
+                AudioControlFlow::Pause => "Pause",
+                AudioControlFlow::Resume => "Resume",
+            }
+        )
+    }
+}
+
 pub struct AudioPlayer {
+    manager: Manager,
     receiver: Receiver<AudioControlFlow>,
 }
 pub struct AudioPlayerInterface {
     sender: Sender<AudioControlFlow>,
 }
 
-pub fn create_audio_player() -> (AudioPlayer, AudioPlayerInterface) {
+pub fn create_audio_player() -> anyhow::Result<(AudioPlayer, AudioPlayerInterface)> {
+    let (manager, _backend) = awedio::start()?;
     let (sender, receiver) = channel();
-    (AudioPlayer { receiver }, AudioPlayerInterface { sender })
+    Ok((
+        AudioPlayer { receiver, manager },
+        AudioPlayerInterface { sender },
+    ))
 }
 
 impl AudioPlayer {
-    pub fn lookup(&self) {
-        let mut sink_tank: Vec<Sink> = Vec::new();
-        let mut stream_tank: Vec<Arc<Sink>> = Vec::new();
-
+    pub fn lookup(&mut self) {
         for msg in self.receiver.iter() {
-            info!("Received control flow");
-            info!("{} sinks playings", sink_tank.len());
-            info!("{} stream playings", stream_tank.len());
-
-            sink_tank.retain(|sink| !sink.empty());
+            info!("Received control flow : {}", msg);
 
             match msg {
-                AudioControlFlow::PlaySink { sink } => sink_tank.push(sink),
-                AudioControlFlow::RegisterStream { stream } => stream_tank.push(stream),
+                AudioControlFlow::Play { sound } => self.manager.play(sound),
                 AudioControlFlow::Pause => {
-                    sink_tank.iter().for_each(Sink::pause);
-                    stream_tank.iter().for_each(|stream| stream.pause());
+                    // unimplemented!();
                 }
                 AudioControlFlow::Resume => {
-                    sink_tank.iter().for_each(Sink::play);
-                    stream_tank.iter().for_each(|stream| stream.play());
+                    // self.manager.play()
                 }
                 AudioControlFlow::Stop => {
-                    stream_tank.iter().for_each(|stream| stream.stop());
-                    sink_tank.iter().for_each(Sink::stop);
-                    sink_tank = Vec::new();
+                    self.manager.clear();
                 }
             }
         }
@@ -63,16 +71,8 @@ impl AudioPlayerInterface {
         self.sender.clone()
     }
 
-    pub fn play_sink(&self, sink: Sink) -> anyhow::Result<()> {
-        Ok(self
-            .get_sender()
-            .send(AudioControlFlow::PlaySink { sink })?)
-    }
-
-    pub fn register_stream(&self, stream: Arc<Sink>) -> anyhow::Result<()> {
-        Ok(self
-            .get_sender()
-            .send(AudioControlFlow::RegisterStream { stream })?)
+    pub fn play_sound(&self, sound: Box<dyn Sound + Send + Sync>) -> anyhow::Result<()> {
+        Ok(self.get_sender().send(AudioControlFlow::Play { sound })?)
     }
 
     pub fn pause(&self) -> anyhow::Result<()> {

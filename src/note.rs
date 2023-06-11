@@ -26,17 +26,15 @@ pub enum Note {
 }
 
 impl Note {
-    pub fn list() -> [Note; 7] {
-        [
-            Self::C,
-            Self::D,
-            Self::E,
-            Self::F,
-            Self::G,
-            Self::A,
-            Self::B,
-        ]
-    }
+    pub const LIST: [Note; 7] = [
+        Self::C,
+        Self::D,
+        Self::E,
+        Self::F,
+        Self::G,
+        Self::A,
+        Self::B,
+    ];
 }
 
 impl From<Note> for &str {

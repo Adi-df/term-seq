@@ -22,8 +22,6 @@ use crossterm::terminal::{
     disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
 };
 
-use rodio::{OutputStream, OutputStreamHandle};
-
 mod note;
 mod notescale;
 mod pianoscale;
@@ -42,7 +40,6 @@ type Term = Terminal<CrosstermBackend<Stdout>>;
 struct AppData {
     tracks: Vec<Track>,
     player: AudioPlayerInterface,
-    stream_handle: OutputStreamHandle,
     playing: bool,
     beat: Duration,
 }
@@ -50,10 +47,12 @@ struct AppData {
 fn main() -> anyhow::Result<()> {
     log_to_file("logs.log", log::LevelFilter::Info)?;
 
-    info!("Load scales");
-    let (_stream, stream_handle) = OutputStream::try_default()?;
+    info!("Start");
 
-    let (player, interface) = create_audio_player();
+    info!("Create audio player");
+    let (mut player, interface) = create_audio_player()?;
+
+    info!("Load scales");
 
     let sine_scale = Rc::new(SineScale::new(
         Box::new(|note| match note {
@@ -69,12 +68,9 @@ fn main() -> anyhow::Result<()> {
         0.10,
     ));
 
-    let piano_scale = Rc::new(PianoScale::from_files(
-        "assets/GrandPiano/{note}4.wav",
-        &interface,
-        &stream_handle,
-    )?);
+    let piano_scale = Rc::new(PianoScale::from_files("assets/GrandPiano/{note}4.wav")?);
 
+    info!("Init app data");
     let mut app_data = AppData {
         tracks: vec![
             Track::try_from(&["C", "D", "E", "F", "G", "A", "B"][..])?
@@ -83,11 +79,11 @@ fn main() -> anyhow::Result<()> {
             Track::try_from(&["C", "D", "E"][..])?.set_tempo(2.),
         ],
         player: interface,
-        stream_handle,
         playing: false,
         beat: Duration::from_secs(1),
     };
 
+    info!("Start audio player deamon");
     thread::spawn(move || player.lookup());
 
     info!("Start TUI");
@@ -110,7 +106,7 @@ fn main() -> anyhow::Result<()> {
     )?;
     terminal.show_cursor()?;
 
-    info!("Stop");
+    info!("Exit");
 
     Ok(res?)
 }
@@ -180,7 +176,7 @@ fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> anyhow::Result<()> {
                 .iter_mut()
                 .map(|track| {
                     if track.should_beat(app_data.beat) {
-                        track.beat(&app_data.player, &app_data.stream_handle)
+                        track.beat(&app_data.player)
                     } else {
                         Ok(())
                     }

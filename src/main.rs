@@ -6,7 +6,8 @@ use std::time::{Duration, Instant};
 
 use log::info;
 
-use notescale::AudioPlayerInterface;
+use simple_logging::log_to_file;
+
 use tui::backend::CrosstermBackend;
 use tui::layout::Constraint;
 use tui::style::{Color, Style};
@@ -27,15 +28,15 @@ use rodio::{OutputStream, OutputStreamHandle};
 mod note;
 mod notescale;
 mod pianoscale;
+mod player;
 mod sinescale;
 mod track;
 
-use note::Note;
-use pianoscale::PianoScale;
-use sinescale::SineScale;
-use track::Track;
-
-use crate::notescale::create_audio_player;
+use crate::note::Note;
+use crate::pianoscale::PianoScale;
+use crate::player::{create_audio_player, AudioPlayerInterface};
+use crate::sinescale::SineScale;
+use crate::track::Track;
 
 type Term = Terminal<CrosstermBackend<Stdout>>;
 
@@ -48,8 +49,12 @@ struct AppData {
 }
 
 fn main() -> Result<(), io::Error> {
+    log_to_file("logs.log", log::LevelFilter::Info).unwrap();
+
     info!("Load scales");
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+
+    let (player, interface) = create_audio_player();
 
     let sine_scale = Rc::new(SineScale::new(
         Box::new(|note| match note {
@@ -65,17 +70,21 @@ fn main() -> Result<(), io::Error> {
         0.10,
     ));
 
-    let piano_scale = Rc::new(PianoScale::from_files("assets/GrandPiano/{note}4.wav").unwrap());
-
-    let (player, interface) = create_audio_player();
+    let piano_scale = Rc::new(
+        PianoScale::from_files("assets/GrandPiano/{note}4.wav", &interface, &stream_handle)
+            .unwrap(),
+    );
 
     let mut app_data = AppData {
         tracks: vec![
             Track::try_from(&["C", "D", "E", "F", "G", "A", "B"][..])
                 .unwrap()
-                .set_tempo(1.)
+                .set_tempo(0.5)
                 .set_note_scale(Some(piano_scale.clone())),
-            Track::try_from(&["C", "D", "E"][..]).unwrap().set_tempo(2.), // .set_note_scale(Some(sine_scale.clone())),
+            Track::try_from(&["C", "D", "E"][..])
+                .unwrap()
+                .set_tempo(2.)
+                .set_note_scale(Some(piano_scale.clone())),
         ],
         player: interface,
         stream_handle,
@@ -83,9 +92,7 @@ fn main() -> Result<(), io::Error> {
         beat: Duration::from_secs(1),
     };
 
-    thread::spawn(move || {
-        player.lookup().unwrap();
-    });
+    thread::spawn(move || player.lookup());
 
     info!("Start TUI");
 

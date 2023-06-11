@@ -4,8 +4,8 @@ use rodio::source::SineWave;
 use rodio::{OutputStreamHandle, Sink, Source};
 
 use crate::note::Note;
-use crate::notescale::AudioPlayerInterface;
 use crate::notescale::NoteScale;
+use crate::player::AudioPlayerInterface;
 
 pub struct SineScale {
     freq: Box<dyn Fn(Note) -> f32>,
@@ -27,7 +27,7 @@ impl NoteScale for SineScale {
                 .amplify(self.amplify),
         );
 
-        player.play(sink).unwrap();
+        player.play_sink(sink).unwrap();
         Ok(())
     }
 }

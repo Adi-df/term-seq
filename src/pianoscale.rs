@@ -1,14 +1,16 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, Cursor, Read};
+use std::sync::Arc;
 
+use log::info;
 use rodio::{Decoder, OutputStreamHandle, Sink, Source};
 
 use strfmt::strfmt;
 
 use crate::note::Note;
-use crate::notescale::AudioPlayerInterface;
 use crate::notescale::NoteScale;
+use crate::player::AudioPlayerInterface;
 
 struct RawSound {
     data: Vec<u8>,
@@ -40,11 +42,19 @@ impl RawSound {
 }
 
 pub struct PianoScale {
+    stream: Arc<Sink>,
     notes_data: HashMap<Note, RawSound>,
 }
 
 impl PianoScale {
-    pub fn from_files(template: &str) -> io::Result<PianoScale> {
+    pub fn from_files(
+        template: &str,
+        player: &AudioPlayerInterface,
+        output_stream: &OutputStreamHandle,
+    ) -> io::Result<PianoScale> {
+        let stream = Arc::new(Sink::try_new(output_stream).unwrap());
+        player.register_stream(stream.clone()).unwrap();
+
         let mut notes_data = HashMap::new();
         Note::list().into_iter().try_for_each(|note| {
             println!(
@@ -59,7 +69,7 @@ impl PianoScale {
             );
             Ok::<(), io::Error>(())
         })?;
-        Ok(Self { notes_data })
+        Ok(Self { stream, notes_data })
     }
 }
 
@@ -67,14 +77,17 @@ impl NoteScale for PianoScale {
     fn play_note(
         &self,
         note: Note,
-        player: &AudioPlayerInterface,
-        output_stream_handle: &OutputStreamHandle,
+        _player: &AudioPlayerInterface,
+        _output_stream_handle: &OutputStreamHandle,
     ) -> Result<(), rodio::PlayError> {
         if let Some(note_sound) = self.notes_data.get(&note) {
-            let sink = Sink::try_new(output_stream_handle)?;
-            sink.append(note_sound.decoder().convert_samples::<f32>());
+            info!("Stream len before : {}", self.stream.len());
 
-            player.play(sink).unwrap();
+            self.stream.clear();
+            self.stream
+                .append(note_sound.decoder().convert_samples::<f32>());
+
+            info!("Stream len after : {}", self.stream.len());
             Ok(())
         } else {
             unreachable!("Shouldn't be reachable !")

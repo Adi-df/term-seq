@@ -4,7 +4,8 @@ use std::time::{Duration, Instant};
 use rodio::OutputStreamHandle;
 
 use crate::note::Note;
-use crate::notescale::{AudioPlayerInterface, NoteScale};
+use crate::notescale::NoteScale;
+use crate::player::AudioPlayerInterface;
 
 pub struct Track {
     pub content: Vec<Note>,

@@ -1,13 +1,18 @@
 use std::fmt::Display;
 use std::sync::mpsc::{channel, Receiver, Sender};
+use std::thread;
 
+use kira::sound::streaming::StreamingSoundHandle;
+use kira::sound::PlaybackState;
 use log::info;
 
-use awedio::manager::Manager;
-use awedio::Sound;
+use kira::manager::backend::DefaultBackend;
+use kira::manager::{AudioManager, AudioManagerSettings};
+use kira::sound::static_sound::{StaticSoundData, StaticSoundHandle};
+use kira::tween::Tween;
 
 pub enum AudioControlFlow {
-    Play { sound: Box<dyn Sound + Send + Sync> },
+    PlayStatic { sound: Box<StaticSoundData> },
     Stop,
     Pause,
     Resume,
@@ -19,7 +24,7 @@ impl Display for AudioControlFlow {
             f,
             "{}",
             match self {
-                AudioControlFlow::Play { .. } => "Play",
+                AudioControlFlow::PlayStatic { .. } => "PlayStatic",
                 AudioControlFlow::Stop => "Stop",
                 AudioControlFlow::Pause => "Pause",
                 AudioControlFlow::Resume => "Resume",
@@ -29,7 +34,9 @@ impl Display for AudioControlFlow {
 }
 
 pub struct AudioPlayer {
-    manager: Manager,
+    manager: AudioManager,
+    statics: Vec<StaticSoundHandle>,
+    streams: Vec<StreamingSoundHandle<anyhow::Error>>,
     receiver: Receiver<AudioControlFlow>,
 }
 pub struct AudioPlayerInterface {
@@ -37,32 +44,60 @@ pub struct AudioPlayerInterface {
 }
 
 pub fn create_audio_player() -> anyhow::Result<(AudioPlayer, AudioPlayerInterface)> {
-    let (manager, _backend) = awedio::start()?;
+    let manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default())?;
     let (sender, receiver) = channel();
     Ok((
-        AudioPlayer { receiver, manager },
+        AudioPlayer {
+            receiver,
+            manager,
+            statics: Vec::new(),
+            streams: Vec::new(),
+        },
         AudioPlayerInterface { sender },
     ))
 }
 
 impl AudioPlayer {
-    pub fn lookup(&mut self) {
+    pub fn spawn_deamon(mut self) {
+        thread::spawn(move || {
+            self.lookup().unwrap();
+        });
+    }
+
+    pub fn lookup(&mut self) -> anyhow::Result<()> {
         for msg in self.receiver.iter() {
             info!("Received control flow : {}", msg);
+            info!("{} sounds playing", self.statics.len());
+
+            self.statics
+                .retain(|sound| matches!(sound.state(), PlaybackState::Stopped));
 
             match msg {
-                AudioControlFlow::Play { sound } => self.manager.play(sound),
+                AudioControlFlow::PlayStatic { sound } => {
+                    let handler = self.manager.play(*sound)?;
+                    self.statics.push(handler);
+                }
                 AudioControlFlow::Pause => {
-                    // unimplemented!();
+                    self.manager.pause(Tween::default())?;
                 }
                 AudioControlFlow::Resume => {
-                    // self.manager.play()
+                    self.manager.resume(Tween::default())?;
                 }
                 AudioControlFlow::Stop => {
-                    self.manager.clear();
+                    self.manager.pause(Tween::default())?;
+                    self.statics
+                        .iter_mut()
+                        .try_for_each(|sound| sound.stop(Tween::default()))?;
+                    self.streams
+                        .iter_mut()
+                        .try_for_each(|sound| sound.stop(Tween::default()))?;
+
+                    self.statics = Vec::new();
+                    self.streams = Vec::new();
                 }
             }
         }
+        Ok(())
     }
 }
 
@@ -71,8 +106,10 @@ impl AudioPlayerInterface {
         self.sender.clone()
     }
 
-    pub fn play_sound(&self, sound: Box<dyn Sound + Send + Sync>) -> anyhow::Result<()> {
-        Ok(self.get_sender().send(AudioControlFlow::Play { sound })?)
+    pub fn play_sound(&self, sound: StaticSoundData) -> anyhow::Result<()> {
+        Ok(self.get_sender().send(AudioControlFlow::PlayStatic {
+            sound: Box::new(sound),
+        })?)
     }
 
     pub fn pause(&self) -> anyhow::Result<()> {

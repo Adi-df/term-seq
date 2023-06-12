@@ -1,7 +1,9 @@
+use std::{panic, process};
+
+use std::collections::HashMap;
 use std::io::{self, Stdout};
 use std::iter::repeat;
 use std::rc::Rc;
-use std::thread;
 use std::time::{Duration, Instant};
 
 use log::info;
@@ -47,36 +49,41 @@ struct AppData {
 fn main() -> anyhow::Result<()> {
     log_to_file("logs.log", log::LevelFilter::Info)?;
 
+    set_panic_hook();
+
     info!("Start");
 
     info!("Create audio player");
-    let (mut player, interface) = create_audio_player()?;
+    let (player, interface) = create_audio_player()?;
 
     info!("Load scales");
 
     let sine_scale = Rc::new(SineScale::new(
-        Box::new(|note| match note {
-            Note::C => 261.63,
-            Note::D => 293.66,
-            Note::E => 329.63,
-            Note::F => 349.23,
-            Note::G => 392.00,
-            Note::A => 440.00,
-            Note::B => 493.88,
-        }),
+        HashMap::from([
+            (Note::C, 261.63),
+            (Note::D, 293.66),
+            (Note::E, 329.63),
+            (Note::F, 349.23),
+            (Note::G, 392.00),
+            (Note::A, 440.00),
+            (Note::B, 493.88),
+        ]),
         Duration::from_millis(500),
-        0.10,
     ));
 
-    let piano_scale = Rc::new(PianoScale::from_files("assets/GrandPiano/{note}4.wav")?);
+    let piano_scale = Rc::new(PianoScale::from_files(
+        "assets/PianoPhase/N{note}_piano_phase.wav",
+    )?);
 
     info!("Init app data");
     let mut app_data = AppData {
         tracks: vec![
-            Track::try_from(&["C", "D", "E", "F", "G", "A", "B"][..])?
-                .set_tempo(2.)
+            Track::try_from(&["E", "F", "B", "C", "D", "F", "E", "C", "B", "F", "D", "C"][..])?
+                .set_tempo(4.)
+                .set_note_scale(Some(piano_scale.clone())),
+            Track::try_from(&["C", "D", "E"][..])?
+                .set_tempo(1.)
                 .set_note_scale(Some(sine_scale.clone())),
-            Track::try_from(&["C", "D", "E"][..])?.set_tempo(2.),
         ],
         player: interface,
         playing: false,
@@ -84,7 +91,7 @@ fn main() -> anyhow::Result<()> {
     };
 
     info!("Start audio player deamon");
-    thread::spawn(move || player.lookup());
+    player.spawn_deamon();
 
     info!("Start TUI");
 
@@ -108,7 +115,18 @@ fn main() -> anyhow::Result<()> {
 
     info!("Exit");
 
-    Ok(res?)
+    res
+}
+
+fn set_panic_hook() {
+    let default_hook = panic::take_hook();
+    panic::set_hook(Box::new(move |info| {
+        disable_raw_mode().unwrap();
+        execute!(io::stdout(), EnterAlternateScreen, EnableMouseCapture).unwrap();
+
+        default_hook(info);
+        process::exit(1);
+    }));
 }
 
 fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> anyhow::Result<()> {
@@ -171,17 +189,13 @@ fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> anyhow::Result<()> {
         })?;
 
         if app_data.playing {
-            app_data
-                .tracks
-                .iter_mut()
-                .map(|track| {
-                    if track.should_beat(app_data.beat) {
-                        track.beat(&app_data.player)
-                    } else {
-                        Ok(())
-                    }
-                })
-                .collect::<anyhow::Result<()>>()?;
+            app_data.tracks.iter_mut().try_for_each(|track| {
+                if track.should_beat(app_data.beat) {
+                    track.beat(&app_data.player)
+                } else {
+                    Ok(())
+                }
+            })?;
         }
 
         if event::poll(Duration::from_millis(10))? {
@@ -196,6 +210,7 @@ fn mainloop(terminal: &mut Term, app_data: &mut AppData) -> anyhow::Result<()> {
                         break;
                     }
                     KeyCode::Char('r') => {
+                        app_data.playing = false;
                         app_data.tracks.iter_mut().for_each(Track::restart);
                         app_data.player.stop()?;
                     }

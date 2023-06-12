@@ -24,15 +24,15 @@ use crossterm::terminal::{
     disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
 };
 
+mod filescale;
 mod note;
 mod notescale;
-mod pianoscale;
 mod player;
 mod sinescale;
 mod track;
 
+use crate::filescale::FileScale;
 use crate::note::Note;
-use crate::pianoscale::PianoScale;
 use crate::player::{create_audio_player, AudioPlayerInterface};
 use crate::sinescale::SineScale;
 use crate::track::Track;
@@ -71,7 +71,7 @@ fn main() -> anyhow::Result<()> {
         Duration::from_millis(500),
     ));
 
-    let piano_scale = Rc::new(PianoScale::from_files(
+    let piano_scale = Rc::new(FileScale::from_files(
         "assets/PianoPhase/N{note}_piano_phase.wav",
     )?);
 

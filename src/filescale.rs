@@ -10,11 +10,11 @@ use crate::note::Note;
 use crate::notescale::NoteScale;
 use crate::player::AudioPlayerInterface;
 
-pub struct PianoScale {
+pub struct FileScale {
     notes_data: HashMap<Note, StaticSoundData>,
 }
 
-impl PianoScale {
+impl FileScale {
     pub fn from_files(template: &str) -> anyhow::Result<Self> {
         let mut notes_data = HashMap::new();
 
@@ -40,7 +40,7 @@ impl PianoScale {
     }
 }
 
-impl NoteScale for PianoScale {
+impl NoteScale for FileScale {
     fn play_note(&self, note: Note, player: &AudioPlayerInterface) -> anyhow::Result<()> {
         if let Some(note_sound) = self.notes_data.get(&note) {
             player.play_sound(note_sound.clone())?;

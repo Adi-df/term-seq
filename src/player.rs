@@ -2,13 +2,13 @@ use std::fmt::Display;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::thread;
 
-use kira::sound::streaming::StreamingSoundHandle;
-use kira::sound::PlaybackState;
 use log::info;
 
 use kira::manager::backend::DefaultBackend;
 use kira::manager::{AudioManager, AudioManagerSettings};
 use kira::sound::static_sound::{StaticSoundData, StaticSoundHandle};
+use kira::sound::streaming::StreamingSoundHandle;
+use kira::sound::PlaybackState;
 use kira::tween::Tween;
 
 pub enum AudioControlFlow {

@@ -1,10 +1,9 @@
-use std::{panic, process};
-
 use std::collections::HashMap;
 use std::io::{self, Stdout};
 use std::iter::repeat;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
+use std::{panic, process};
 
 use log::info;
 use simple_logging::log_to_file;

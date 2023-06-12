@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use std::fs::File;
 
-use kira::sound::static_sound::{StaticSoundData, StaticSoundSettings};
 use log::info;
+
+use kira::sound::static_sound::{StaticSoundData, StaticSoundSettings};
 
 use strfmt::strfmt;
 
